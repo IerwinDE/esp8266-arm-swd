@@ -300,7 +300,7 @@ bool ARMKinetisDebug::flashSectorBufferWrite(uint32_t bufferOffset, const uint32
 
 bool ARMKinetisDebug::flashSectorProgram(uint32_t address)
 {
-    if (address & (FLASH_SECTOR_SIZE-1)) {
+    if (address & (SPI_FLASH_SEC_SIZE-1)) {
         log(LOG_ERROR, "ARMKinetisDebug::flashSectorProgram alignment error");
         return false;
     }
@@ -418,19 +418,19 @@ bool ARMKinetisDebug::FlashProgrammer::isComplete()
 
 bool ARMKinetisDebug::FlashProgrammer::next()
 {
-    uint32_t address = nextSector * FLASH_SECTOR_SIZE;
-    const uint32_t *ptr = image + (nextSector * FLASH_SECTOR_SIZE/4);
+    uint32_t address = nextSector * SPI_FLASH_SEC_SIZE;
+    const uint32_t *ptr = image + (nextSector * SPI_FLASH_SEC_SIZE/4);
 
     if (isVerifying) {
         target.log(LOG_NORMAL, "FLASH: Verifying sector at %08x", address);
 
-        uint32_t buffer[FLASH_SECTOR_SIZE/4];
-        if (!target.memLoad(address, buffer, FLASH_SECTOR_SIZE/4))
+        uint32_t buffer[SPI_FLASH_SEC_SIZE/4];
+        if (!target.memLoad(address, buffer, SPI_FLASH_SEC_SIZE/4))
             return false;
 
         bool okay = true;
 
-        for (unsigned i = 0; i < FLASH_SECTOR_SIZE/4; i++) {
+        for (unsigned i = 0; i < SPI_FLASH_SEC_SIZE/4; i++) {
             if (buffer[i] != ptr[i]) {
                 target.log(LOG_ERROR, "FLASH: Verify error at %08x. Expected %08x, actual %08x",
                     address + i*4, ptr[i], buffer[i]);
@@ -449,7 +449,7 @@ bool ARMKinetisDebug::FlashProgrammer::next()
     } else {
         target.log(LOG_NORMAL, "FLASH: Programming sector at %08x", address);
 
-        if (!target.flashSectorBufferWrite(0, ptr, FLASH_SECTOR_SIZE/4))
+        if (!target.flashSectorBufferWrite(0, ptr, SPI_FLASH_SEC_SIZE/4))
             return false;
         if (!target.flashSectorProgram(address))
             return false;
