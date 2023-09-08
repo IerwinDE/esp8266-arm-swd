@@ -729,6 +729,7 @@ uint32_t ARMDebug::wireRead(unsigned nBits)
         digitalWrite(clockPin, LOW);
         mask <<= 1;
         digitalWrite(clockPin, HIGH);
+        delayMicroseconds(1); //added this because the transfere gets so much more reliable on ESP32 and without it you have to build retry mehcanisms around every single step
     }
 
     log(LOG_TRACE_SWD, "SWD Read  %08x (%d)", result, nBits);
