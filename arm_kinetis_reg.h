@@ -35,10 +35,6 @@
 #pragma once
 #include "arm_reg.h"
 
-#ifndef FLASH_SECTOR_SIZE
-  #definde FLASH_SECTOR_SIZE 0x1000 //this makesthe whole project dependant on https://github.com/esp8266/Arduino. I want to use the Classes on an ESP32 so Im putting this here
-#endif
-
 // chapter 11: Port control and interrupts (PORT)
 #define REG_PORTA_PCR0              0x40049000            // Pin Control Register n
 #define REG_PORT_PCR_ISF            0x01000000            // Interrupt Status Flag
